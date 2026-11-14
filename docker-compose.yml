@@ -1,0 +1,33 @@
+# Sobe o API Gateway (porta 7521). Sem banco: o cadastro de APIs fica no arquivo data/apis.json, num volume Docker.
+#
+# As variáveis (JWT_SECRET, ADMIN_*...) vêm do ambiente e NUNCA ficam escritas neste arquivo.
+# Com Infisical (padrão da equipe):
+#   npx infisical run --env=dev -- docker compose up --build
+# Sem Infisical: crie um .env ao lado deste arquivo com as mesmas variáveis e rode  docker compose up --build
+#
+# No servidor (Jenkins): o pipeline grava os segredos do Infisical num .env temporário e roda  docker compose up -d.
+#
+# Gateway: http://localhost:7521        Painel: http://localhost:7521/admin
+# Público:  http://academico3.rj.senac.br/condominio/gateway        Painel: .../condominio/gateway/admin
+services:
+  gateway:
+    build: .
+    container_name: api-gateway-proptech
+    ports:
+      - "7521:7521"
+    environment:
+      PORT: 7521
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET (Infisical ou .env)}
+      ADMIN_USUARIO: ${ADMIN_USUARIO:?defina ADMIN_USUARIO (Infisical ou .env)}
+      ADMIN_SENHA_HASH: ${ADMIN_SENHA_HASH:?defina ADMIN_SENHA_HASH (npm run hash-senha)}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:?defina ADMIN_JWT_SECRET (Infisical ou .env)}
+      MORADOR_API_URL: ${MORADOR_API_URL:-}
+      FINANCEIRO_API_URL: ${FINANCEIRO_API_URL:-}
+      SERVICOS_API_URL: ${SERVICOS_API_URL:-}
+      GATEWAY_PREFIXO: ${GATEWAY_PREFIXO:-/condominio/gateway}
+    volumes:
+      - gateway-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  gateway-data:

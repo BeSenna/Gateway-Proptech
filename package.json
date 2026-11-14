@@ -1,0 +1,20 @@
+{
+  "name": "gateway-proptech",
+  "version": "1.0.0",
+  "description": "API Gateway do PropTech: ponto de entrada único para os microsserviços (roteamento, validação de JWT e painel para cadastrar APIs).",
+  "private": true,
+  "main": "src/server.js",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server.js",
+    "start:dev": "infisical run --env=dev -- node --watch src/server.js",
+    "start:infisical": "infisical run --env=dev -- node src/server.js",
+    "hash-senha": "node scripts/hash-senha.js",
+    "test": "node --test --test-concurrency=1 test/gateway.test.js test/admin.test.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

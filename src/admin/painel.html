@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>API Gateway · PropTech</title>
+<style nonce="__NONCE__">
+  :root {
+    --navy: #0f1d4d; --primary: #1e3a8a; --accent: #f59e0b; --ink: #1f2937; --muted: #6b7280;
+    --line: #e5e7eb; --bg: #f3f5fa; --card: #ffffff; --ok: #15803d; --bad: #b91c1c;
+    --okbg: #dcfce7; --badbg: #fee2e2; --warnbg: #fef3c7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #e5e7eb; --muted: #9ca3af; --line: #2b3550; --bg: #0b1226; --card: #121b36; --okbg: #14391f; --badbg: #4a1b1b; --warnbg: #3d2f0a; --primary: #6d8cf0; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Inter, sans-serif; background: var(--bg); color: var(--ink); }
+  header { background: var(--navy); color: #fff; padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
+  header .logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--navy); display: grid; place-items: center; font-weight: 800; }
+  header h1 { margin: 0; font-size: 16px; }
+  header small { opacity: .75; display: block; font-size: 12px; }
+  header .espaco { flex: 1; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px; }
+  .cartao { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  h2 { margin: 0 0 12px; font-size: 16px; }
+  label { display: block; font-size: 12px; font-weight: 700; margin: 12px 0 5px; }
+  input[type=text], input[type=password], input[type=url], textarea {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); font: inherit;
+  }
+  textarea { min-height: 84px; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  input:focus, textarea:focus, button:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+  .dica { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .linha { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .entre { justify-content: space-between; }
+  .sem-margem { margin: 0; }
+  .grade { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+  button { font: inherit; font-weight: 700; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  button.primario { background: var(--primary); border-color: var(--primary); color: #fff; }
+  button.perigo { color: var(--bad); }
+  button.pequeno { padding: 4px 9px; font-size: 12px; }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+  .login { max-width: 380px; margin: 56px auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; background: var(--bg); padding: 1px 5px; border-radius: 5px; word-break: break-all; }
+  .etiqueta { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+  .etiqueta.sim { background: var(--okbg); color: var(--ok); }
+  .etiqueta.nao { background: var(--badbg); color: var(--bad); }
+  .etiqueta.neutra { background: var(--warnbg); }
+  .acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+  .aviso { padding: 9px 12px; border-radius: 8px; margin: 10px 0; font-size: 13px; }
+  .aviso.erro { background: var(--badbg); color: var(--bad); }
+  .aviso.ok { background: var(--okbg); color: var(--ok); }
+  .aviso ul { margin: 4px 0 0; padding-left: 18px; }
+  .vazio { text-align: center; color: var(--muted); padding: 26px 0; }
+  dialog { border: 1px solid var(--line); border-radius: 14px; padding: 20px; width: min(620px, 94vw); background: var(--card); color: var(--ink); }
+  dialog::backdrop { background: rgba(0, 0, 0, .5); }
+  .marcar { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-weight: 600; font-size: 13px; }
+  .marcar input { width: auto; }
+  .rodape { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+  [hidden] { display: none !important; }
+  @media (max-width: 720px) { .grade { grid-template-columns: 1fr; } th:nth-child(3), td:nth-child(3) { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">GW</div>
+  <div><h1>API Gateway</h1><small>PropTech · cadastro de APIs</small></div>
+  <div class="espaco"></div>
+  <span id="quem" hidden></span>
+  <button id="sair" class="pequeno" hidden>Sair</button>
+</header>
+
+<main>
+  <!-- ENTRAR -->
+  <section id="telaLogin" class="cartao login" hidden>
+    <h2>Entrar no painel</h2>
+    <div id="erroLogin" class="aviso erro" hidden></div>
+    <label for="usuario">Usuário</label>
+    <input id="usuario" type="text" autocomplete="username" autofocus>
+    <label for="senha">Senha</label>
+    <input id="senha" type="password" autocomplete="current-password">
+    <div class="rodape"><button id="entrar" class="primario">Entrar</button></div>
+  </section>
+
+  <!-- PAINEL -->
+  <section id="telaPainel" hidden>
+    <div class="cartao">
+      <h2>Endereço público do gateway</h2>
+      <div><code id="enderecoBase"></code></div>
+      <div class="dica">O frontend chama este endereço + o prefixo de cada API (ex.: <code id="exemploBase"></code>). O gateway encaminha a chamada ao destino cadastrado.</div>
+    </div>
+
+    <div class="cartao">
+      <div class="linha entre">
+        <h2 class="sem-margem">APIs cadastradas</h2>
+        <button id="nova" class="primario">+ Cadastrar API</button>
+      </div>
+      <div id="aviso" class="aviso" hidden></div>
+      <table>
+        <thead><tr><th>API</th><th>Chamada pública</th><th>Destino</th><th>Token</th><th>Estado</th><th></th></tr></thead>
+        <tbody id="lista"></tbody>
+      </table>
+      <div id="vazio" class="vazio" hidden>Nenhuma API cadastrada ainda. Clique em “Cadastrar API”.</div>
+    </div>
+  </section>
+</main>
+
+<dialog id="formulario">
+  <h2 id="tituloForm">Cadastrar API</h2>
+  <div id="erroForm" class="aviso erro" hidden></div>
+  <div class="grade">
+    <div>
+      <label for="fNome">Nome</label>
+      <input id="fNome" type="text" maxlength="60" placeholder="MS Moradores">
+    </div>
+    <div>
+      <label for="fPrefixo">Prefixo público</label>
+      <input id="fPrefixo" type="text" maxlength="41" placeholder="/morador">
+    </div>
+  </div>
+  <div class="dica">O prefixo é o trecho que o frontend usa depois do endereço do gateway. Não pode ser <code>/admin</code> nem <code>/health</code>.</div>
+  <label for="fDestino">Destino (endereço interno do serviço)</label>
+  <input id="fDestino" type="url" placeholder="http://10.136.38.50:7522">
+  <div class="dica">Pode ter um caminho base, ex.: <code>http://10.136.38.50:7523/condominio/financeiro</code>. Sem usuário, senha ou parâmetros.</div>
+  <label for="fHealth">Caminho de teste de saúde</label>
+  <input id="fHealth" type="text" placeholder="/health">
+  <label class="marcar"><input id="fToken" type="checkbox"> Exigir token (JWT) nas chamadas</label>
+  <label for="fPublicas">Rotas públicas (sem token), uma por linha</label>
+  <textarea id="fPublicas" spellcheck="false" placeholder="POST /auth/login&#10;GET /health&#10;GET /docs/*"></textarea>
+  <div class="dica">Formato: <code>MÉTODO /caminho</code> (use <code>*</code> no método para qualquer um e <code>/*</code> no fim para tudo abaixo do caminho). O caminho é o do serviço, sem o prefixo.</div>
+  <label class="marcar"><input id="fAtivo" type="checkbox"> API ativa</label>
+  <div class="rodape">
+    <button id="cancelar">Cancelar</button>
+    <button id="salvar" class="primario">Salvar</button>
+  </div>
+</dialog>
+
+<script nonce="__NONCE__">
+(function () {
+  "use strict";
+  // O painel é servido em <prefixo público>/admin; a base é tudo que vem antes de /admin (funciona com ou sem prefixo).
+  const BASE = location.pathname.replace(/\/admin\/?$/, "");
+  const API = BASE + "/admin/api";
+  const $ = (id) => document.getElementById(id);
+  let token = null;
+  let apis = [];
+  let editandoId = null;
+
+  try { token = sessionStorage.getItem("gw-token"); } catch (e) { /* sem armazenamento: vale só nesta aba */ }
+
+  function el(tag, props, ...filhos) {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(props || {})) {
+      if (k === "class") n.className = v; else if (k === "onclick") n.addEventListener("click", v); else n.setAttribute(k, v);
+    }
+    for (const f of filhos) n.append(f instanceof Node ? f : document.createTextNode(String(f)));
+    return n;
+  }
+
+  async function chamar(metodo, caminho, corpo) {
+    const cab = {};
+    if (corpo !== undefined) cab["Content-Type"] = "application/json";
+    if (token) cab["Authorization"] = "Bearer " + token;
+    const r = await fetch(API + caminho, { method: metodo, headers: cab, body: corpo === undefined ? undefined : JSON.stringify(corpo) });
+    const dados = r.status === 204 ? null : await r.json().catch(() => ({}));
+    if (r.status === 401 && token) { sair("Sessão expirada. Entre novamente."); throw new Error("sessão"); }
+    if (!r.ok) { const e = new Error((dados && dados.erro) || "Erro inesperado."); e.detalhes = dados && dados.detalhes; throw e; }
+    return dados;
+  }
+
+  function mostrarAviso(caixa, texto, detalhes, tipo) {
+    caixa.className = "aviso " + (tipo || "erro");
+    caixa.replaceChildren(texto);
+    if (detalhes && detalhes.length) caixa.append(el("ul", {}, ...detalhes.map((d) => el("li", {}, d))));
+    caixa.hidden = false;
+  }
+
+  function tela(logado) {
+    $("telaLogin").hidden = logado; $("telaPainel").hidden = !logado;
+    $("sair").hidden = !logado; $("quem").hidden = !logado;
+  }
+
+  function sair(msg) {
+    token = null;
+    try { sessionStorage.removeItem("gw-token"); } catch (e) { /* ok */ }
+    tela(false);
+    if (msg) mostrarAviso($("erroLogin"), msg); else $("erroLogin").hidden = true;
+  }
+
+  async function entrar() {
+    $("entrar").disabled = true;
+    try {
+      const r = await chamar("POST", "/login", { usuario: $("usuario").value.trim(), senha: $("senha").value });
+      token = r.token; $("senha").value = ""; $("erroLogin").hidden = true;
+      try { sessionStorage.setItem("gw-token", token); } catch (e) { /* ok */ }
+      await abrirPainel(r.usuario);
+    } catch (e) { if (e.message !== "sessão") mostrarAviso($("erroLogin"), e.message); }
+    $("entrar").disabled = false;
+  }
+
+  async function abrirPainel(usuario) {
+    $("quem").textContent = usuario || "";
+    $("enderecoBase").textContent = location.origin + BASE;
+    $("exemploBase").textContent = location.origin + BASE + "/morador/health";
+    tela(true);
+    await carregar();
+  }
+
+  async function carregar() {
+    try { apis = await chamar("GET", "/apis"); } catch (e) { if (e.message !== "sessão") mostrarAviso($("aviso"), e.message); return; }
+    const corpo = $("lista"); corpo.replaceChildren();
+    $("vazio").hidden = apis.length > 0;
+    for (const a of apis) {
+      const resultado = el("div", { class: "dica" });
+      corpo.append(el("tr", {},
+        el("td", {}, el("strong", {}, a.nome), resultado),
+        el("td", {}, el("code", {}, BASE + a.prefixo + "/…")),
+        el("td", {}, el("code", {}, a.destino)),
+        el("td", {}, el("span", { class: "etiqueta " + (a.exigeToken ? "sim" : "neutra") }, a.exigeToken ? "Exige" : "Não exige"),
+          a.exigeToken && a.rotasPublicas.length ? el("div", { class: "dica" }, a.rotasPublicas.length + " rota(s) pública(s)") : ""),
+        el("td", {}, el("span", { class: "etiqueta " + (a.ativo ? "sim" : "nao") }, a.ativo ? "Ativa" : "Inativa")),
+        el("td", {}, el("div", { class: "acoes" },
+          el("button", { class: "pequeno", onclick: () => testar(a, resultado) }, "Testar"),
+          el("button", { class: "pequeno", onclick: () => abrirForm(a) }, "Editar"),
+          el("button", { class: "pequeno perigo", onclick: () => excluir(a) }, "Excluir")))));
+    }
+  }
+
+  async function testar(a, destino) {
+    destino.textContent = "Testando…";
+    try {
+      const r = await chamar("POST", "/apis/" + a.id + "/testar");
+      destino.textContent = r.ok ? "✔ respondeu " + r.status + " em " + r.ms + " ms" : "✖ " + (r.erro || "respondeu " + r.status);
+    } catch (e) { if (e.message !== "sessão") destino.textContent = "✖ " + e.message; }
+  }
+
+  async function excluir(a) {
+    if (!confirm("Excluir “" + a.nome + "”? O frontend deixa de alcançar esse serviço pelo gateway.")) return;
+    try { await chamar("DELETE", "/apis/" + a.id); mostrarAviso($("aviso"), "API excluída.", null, "ok"); await carregar(); }
+    catch (e) { if (e.message !== "sessão") mostrarAviso($("aviso"), e.message); }
+  }
+
+  function abrirForm(a) {
+    editandoId = a ? a.id : null;
+    $("tituloForm").textContent = a ? "Editar API" : "Cadastrar API";
+    $("fNome").value = a ? a.nome : ""; $("fPrefixo").value = a ? a.prefixo : "";
+    $("fDestino").value = a ? a.destino : ""; $("fHealth").value = a ? a.healthPath : "/health";
+    $("fToken").checked = a ? a.exigeToken : true; $("fAtivo").checked = a ? a.ativo : true;
+    $("fPublicas").value = a ? a.rotasPublicas.join("\n") : "";
+    $("erroForm").hidden = true;
+    $("formulario").showModal();
+  }
+
+  async function salvar() {
+    const dados = {
+      nome: $("fNome").value, prefixo: $("fPrefixo").value, destino: $("fDestino").value, healthPath: $("fHealth").value,
+      exigeToken: $("fToken").checked, ativo: $("fAtivo").checked,
+      rotasPublicas: $("fPublicas").value.split("\n").map((l) => l.trim()).filter(Boolean),
+    };
+    $("salvar").disabled = true;
+    try {
+      if (editandoId) await chamar("PUT", "/apis/" + editandoId, dados); else await chamar("POST", "/apis", dados);
+      $("formulario").close();
+      mostrarAviso($("aviso"), editandoId ? "API atualizada." : "API cadastrada.", null, "ok");
+      await carregar();
+    } catch (e) { if (e.message !== "sessão") mostrarAviso($("erroForm"), e.message, e.detalhes); }
+    $("salvar").disabled = false;
+  }
+
+  $("entrar").addEventListener("click", entrar);
+  $("senha").addEventListener("keydown", (e) => { if (e.key === "Enter") entrar(); });
+  $("sair").addEventListener("click", () => sair());
+  $("nova").addEventListener("click", () => abrirForm(null));
+  $("cancelar").addEventListener("click", () => $("formulario").close());
+  $("salvar").addEventListener("click", salvar);
+
+  (async function iniciar() {
+    if (token) {
+      try { const s = await chamar("GET", "/sessao"); await abrirPainel(s.usuario); return; } catch (e) { /* cai no login */ }
+    }
+    tela(false);
+  })();
+})();
+</script>
+</body>
+</html>
