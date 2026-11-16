@@ -41,7 +41,7 @@ function validar(entrada, existentes, idAtual) {
     if (/^169\.254\./.test(u.hostname)) throw new Error("endereço de metadados");
     destino = `${u.protocol}//${u.host}${u.pathname.replace(/\/+$/, "")}`;
   } catch {
-    erros.push("destino: informe uma URL http(s) sem usuário, senha ou parâmetros (ex.: http://10.136.38.50:7522).");
+    erros.push("destino: informe uma URL http(s) sem usuário, senha ou parâmetros (ex.: http://<IP-INTERNO>:7522).");
   }
 
   let healthPath = d.healthPath === undefined || d.healthPath === "" ? "/health" : d.healthPath;

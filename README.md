@@ -27,7 +27,7 @@ Frontend ──► Gateway (7521) ──┬──► MS Moradores  (7522)
 Regras:
 
 1. O **prefixo** (`/morador`) escolhe a API; o resto do caminho, o método, o corpo e a query seguem para o serviço.
-   O **destino** pode ter caminho base (ex.: `http://10.136.38.50:7523/condominio/financeiro`).
+   O **destino** pode ter caminho base (ex.: `http://<IP-INTERNO>:7523/condominio/financeiro`).
 2. Rotas **protegidas** exigem `Authorization: Bearer <token>`: o gateway confere assinatura (HS256, o mesmo `JWT_SECRET`
    dos microsserviços) e validade. Sem token, inválido ou expirado → `401`. Ele **não** pede login de novo e **não
    substitui** a validação dos serviços: cada microsserviço continua protegendo as suas rotas.
@@ -61,8 +61,8 @@ Crie estes segredos no ambiente `dev` do projeto do gateway (o gateway **não so
 | `ADMIN_USUARIO` | usuário do painel |
 | `ADMIN_SENHA_HASH` | gerado por `npm run hash-senha` (guarde só o hash, nunca a senha) |
 | `ADMIN_JWT_SECRET` | texto longo e aleatório, **diferente** do `JWT_SECRET` |
-| `MORADOR_API_URL` | `http://10.136.38.50:7522` (endereço interno do Moradores) |
-| `FINANCEIRO_API_URL` | `http://10.136.38.50:7523/condominio/financeiro` |
+| `MORADOR_API_URL` | `http://<IP-INTERNO>:7522` (endereço interno do Moradores) |
+| `FINANCEIRO_API_URL` | `http://<IP-INTERNO>:7523/condominio/financeiro` |
 | `SERVICOS_API_URL` | vazio por enquanto |
 | `PORT` | `7521` (opcional) |
 

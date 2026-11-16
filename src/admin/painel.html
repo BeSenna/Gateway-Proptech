@@ -123,8 +123,8 @@
   </div>
   <div class="dica">O prefixo é o trecho que o frontend usa depois do endereço do gateway. Não pode ser <code>/admin</code> nem <code>/health</code>.</div>
   <label for="fDestino">Destino (endereço interno do serviço)</label>
-  <input id="fDestino" type="url" placeholder="http://10.136.38.50:7522">
-  <div class="dica">Pode ter um caminho base, ex.: <code>http://10.136.38.50:7523/condominio/financeiro</code>. Sem usuário, senha ou parâmetros.</div>
+  <input id="fDestino" type="url" placeholder="http://<IP-INTERNO>:7522">
+  <div class="dica">Pode ter um caminho base, ex.: <code>http://<IP-INTERNO>:7523/condominio/financeiro</code>. Sem usuário, senha ou parâmetros.</div>
   <label for="fHealth">Caminho de teste de saúde</label>
   <input id="fHealth" type="text" placeholder="/health">
   <label class="marcar"><input id="fToken" type="checkbox"> Exigir token (JWT) nas chamadas</label>
