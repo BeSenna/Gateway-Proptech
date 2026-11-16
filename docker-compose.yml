@@ -25,6 +25,10 @@ services:
       FINANCEIRO_API_URL: ${FINANCEIRO_API_URL:-}
       SERVICOS_API_URL: ${SERVICOS_API_URL:-}
       GATEWAY_PREFIXO: ${GATEWAY_PREFIXO:-/condominio/gateway}
+    # Permite usar http://host.docker.internal:<porta> como destino de uma API, caso o IP do próprio servidor não seja
+    # alcançável de dentro do container (teste o botão "Testar" do painel; só use se precisar).
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - gateway-data:/app/data
     restart: unless-stopped
