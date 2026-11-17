@@ -13,7 +13,7 @@ pipeline {
     }
 
     environment {
-        APP_NAME             = 'api-gateway-proptech'   // = container_name do docker-compose.yml
+        APP_NAME             = 'proptech-gateway'   // = container_name do docker-compose.yml
         APP_PORT             = '7521'
         INFISICAL_PROJECT_ID = '3633d93d-b7f9-4b9a-a994-e62b43a7e247'  // não é segredo (Project Settings > Project ID)
         INFISICAL_ENV        = 'dev'                  // ambiente do Infisical (slug: dev/prod)

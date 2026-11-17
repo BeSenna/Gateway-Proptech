@@ -12,7 +12,7 @@
 services:
   gateway:
     build: .
-    container_name: api-gateway-proptech
+    container_name: proptech-gateway
     ports:
       - "7521:7521"
     environment:
