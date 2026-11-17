@@ -38,7 +38,7 @@ pipeline {
             steps {
                 withCredentials([
                     string(
-                        credentialsId: 'COLOQUE_AQUI_A_CREDENCIAL_DO_JENKINS',  // o professor cria; é o token do projeto do Infisical
+                        credentialsId: 'tokenbernardocondominiogateway',  // o professor cria; é o token do projeto do Infisical
                         variable: 'INFISICAL_TOKEN'
                     )
                 ]) {
